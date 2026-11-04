@@ -110,7 +110,7 @@ y = df['SalePrice']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 42)
 
-## Create pipeline and fit on the given data (the Kaggle data that is being tested on is seperate)
+## Create pipeline and fit on the given data (the Kaggle data that is being tested on is separate)
 model_pipeline = Pipeline([('transform', transformer), ('model', LinearRegression())])
 
 model_pipeline.fit(X, y)
@@ -119,5 +119,6 @@ preds = model_pipeline.predict(X_test)
 ## Evaluate RMSE to get a sense of model performance
 mean_squared_error(y_test, preds) ** 0.5
 
+test_preds = model_pipeline.predict(test[cols])
 pdf = pd.DataFrame({'Id': test.index, 'SalePrice': test_preds})
 pdf.to_csv('preds.csv', index = False)
