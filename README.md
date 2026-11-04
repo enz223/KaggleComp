@@ -120,5 +120,6 @@ preds = model_pipeline.predict(X_test)
 mean_squared_error(y_test, preds) ** 0.5
 
 test_preds = model_pipeline.predict(test[cols])
+
 pdf = pd.DataFrame({'Id': test.index, 'SalePrice': test_preds})
 pdf.to_csv('preds.csv', index = False)
