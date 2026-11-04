@@ -75,33 +75,27 @@ df[df.columns[df.isna().sum() > 0]].isna().sum()/len(df)
 
 df = df.drop(columns = ['PoolQC', 'Fence', 'MiscFeature', 'FireplaceQu', 'Alley'])
 
-# numeric columns
+## Define numeric columns
 num_cols = ['OverallQual', 'GrLivArea', 'TotalBsmtSF', '1stFlrSF', 'GarageCars',
             'GarageArea', 'FullBath', 'TotRmsAbvGrd', 'Fireplaces',
             'YearBuilt', 'YearRemodAdd', 'LotArea', 'MasVnrArea']
 
-# quality columns that have an order
+## Quality columns that have an order (ordinal columns)
 ord_cols = ['ExterQual', 'KitchenQual', 'BsmtQual', 'HeatingQC', 'GarageQual']
 
-# categories with no order
+## Categories with no order (need to be one hot encoded)
 ohe_cols = ['Neighborhood', 'MSZoning', 'BldgType', 'Foundation',
             'GarageType', 'CentralAir', 'SaleCondition']
 
 cols = num_cols + ord_cols + ohe_cols
 
-vals = [['None', 'Po', 'Fa', 'TA', 'Gd', 'Ex']]
+vals = [['None', 'Po', 'Fa', 'TA', 'Gd', 'Ex']] # for the ordinal columns
 
-
+## Create OHE pipe that will impute missing values and OneHotEncode relevant columns
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OrdinalEncoder
 ohe_pipe = Pipeline([('impute', SimpleImputer(strategy = 'constant', fill_value = 'None')),
                      ('ohe', OneHotEncoder(drop = 'first', handle_unknown = 'ignore'))])
-
-
-qual = ['None', 'Po', 'Fa', 'TA', 'Gd', 'Ex']
-ord_vals = [qual, qual, qual, qual, qual, qual,
-            ['None', 'No', 'Mn', 'Av', 'Gd'],    # BsmtExposure
-            ['None', 'Unf', 'RFn', 'Fin']]       # GarageFinish
 
 ord_pipe = Pipeline([('impute', SimpleImputer(strategy = 'constant', fill_value = 'None')),
                      ('ord', OrdinalEncoder(categories = vals*len(ord_cols)))])
@@ -110,18 +104,19 @@ transformer = make_column_transformer((ohe_pipe, ohe_cols),
                                       (ord_pipe, ord_cols),
                                       (SimpleImputer(), num_cols))
 
-
+## Define variables, train_test_split
 X = df[cols]
 y = df['SalePrice']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 42)
 
-
+## Create pipeline and fit on the given data (the Kaggle data that is being tested on is seperate)
 model_pipeline = Pipeline([('transform', transformer), ('model', LinearRegression())])
 
 model_pipeline.fit(X, y)
 preds = model_pipeline.predict(X_test)
 
+## Evaluate RMSE to get a sense of model performance
 mean_squared_error(y_test, preds) ** 0.5
 
 pdf = pd.DataFrame({'Id': test.index, 'SalePrice': test_preds})
