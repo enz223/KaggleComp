@@ -5,7 +5,7 @@ For our original version, we decided to use three features: neighborhood (becaus
 
 For our updated version, (see below original version), we checked which numeric columns correlate most strongly with `SalePrice` and kept the top ones (overall quality, living area, basement and garage size, bathrooms, year built/remodeled, etc.). We also added quality ratings and key categories like `Neighborhood`, `MSZoning` and `SaleCondition`. We dropped `PoolQC`, `Fence`, `MiscFeature`, `FireplaceQu` and `Alley` because most of their values are missing.
 
-# Import libraries for data processing and analysis
+## Import libraries for data processing and analysis
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.datasets import fetch_openml
@@ -15,41 +15,41 @@ from sklearn.preprocessing import StandardScaler, PolynomialFeatures, OneHotEnco
 from sklearn.metrics import mean_squared_error, root_mean_squared_error
 from sklearn.pipeline import Pipeline
 
-# Load the training dataset containing house features and prices
+## Load the training dataset containing house features and prices
 df = pd.read_csv('/content/sample_data/train.csv')
 
-# Preview the first 5 rows
+## Preview the first 5 rows
 df.head(5)
 
-# Use Neighborhood, LotArea, and PoolArea for predictors. Compare it to SalePrice
+## Use Neighborhood, LotArea, and PoolArea for predictors. Compare it to SalePrice
 X = df[['Neighborhood', 'LotArea', 'PoolArea']]
 y = df['SalePrice']
 
-# Load the test dataset to help with predictions
+## Load the test dataset to help with predictions
 test = pd.read_csv('/content/sample_data/test.csv')
 
-# Split the data into a training set and a test set
+## Split the data into a training set and a test set
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state = 42)
 
-# 
+## 
 from sklearn.compose import make_column_transformer
 transformer = make_column_transformer((OneHotEncoder(drop = 'first', handle_unknown = 'ignore'), ['Neighborhood']),
                                       remainder = 'passthrough')
 
-#
+##
 pipe = Pipeline([('transform', transformer), ('model', LinearRegression())])
 
-#
+##
 pipe.fit(X_train, y_train)
 preds = pipe.predict(X_test)
 
-# Display RMSE
+## Display RMSE
 mean_squared_error(y_test, preds) ** 0.5
 
 
 
 # ** For our final submission **:
-# Imports
+## Imports
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.datasets import fetch_openml
@@ -58,20 +58,19 @@ from sklearn.linear_model import LinearRegression, Ridge, RidgeCV
 from sklearn.preprocessing import StandardScaler, PolynomialFeatures, OneHotEncoder
 from sklearn.metrics import mean_squared_error, root_mean_squared_error
 from sklearn.pipeline import Pipeline
+from sklearn.compose import make_column_transformer
 
-# Create Dataframe
+## Create Dataframe
 df = pd.read_csv('/content/sample_data/train.csv')
 df.head(5)
 test = pd.read_csv('/content/sample_data/test.csv')
 
-from sklearn.compose import make_column_transformer
-
+## Get a sense of which numeric columns are most useful and correlated to SalePrice by ranking correlation
 df.select_dtypes(['int', 'float']).corr()['SalePrice'].sort_values(ascending = False)
 
-# Get all the columns with missing values
+## Get all the columns with missing values
 df.columns[df.isna().sum() > 0]
-
-# Percentage of missing values
+### Get the percentage of missing values & drop columns with high number of missing values
 df[df.columns[df.isna().sum() > 0]].isna().sum()/len(df)
 
 df = df.drop(columns = ['PoolQC', 'Fence', 'MiscFeature', 'FireplaceQu', 'Alley'])
