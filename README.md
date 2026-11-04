@@ -1,5 +1,8 @@
 # KaggleComp
 
+# Our group: Grace Liu, Helen Deng, Evelyn Zhang
+# We decided to use three features: neighborhood (because location is a big driver of home price), lot area (bigger lots would cost more), and pool area (because pools are premium features of a home). since neighborhood is a text category, we used OneHotEncoder to turn each neighborhood into a 0/1 column. then, we combined the encoding and model in the pipeline.
+
 # Import libraries for data processing and analysis
 import pandas as pd
 from sklearn.linear_model import LinearRegression
