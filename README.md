@@ -1,6 +1,6 @@
 # KaggleComp
 
-## Our group: Grace Liu, Helen Deng, Evelyn Zhang
+# Our group: Grace Liu, Helen Deng, Evelyn Zhang
 For our original version, we decided to use three features: neighborhood (because location is a big driver of home price), lot area (bigger lots would cost more), and pool area (because pools are premium features of a home). Since neighborhood is a text category, we used OneHotEncoder to turn each neighborhood into a 0/1 column. Then, we combined the encoding and model in the pipeline.
 
 For our updated version, (see below original version), we checked which numeric columns correlate most strongly with `SalePrice` and kept the top ones (overall quality, living area, basement and garage size, bathrooms, year built/remodeled, etc.). We also added quality ratings and key categories like `Neighborhood`, `MSZoning` and `SaleCondition`. We dropped `PoolQC`, `Fence`, `MiscFeature`, `FireplaceQu` and `Alley` because most of their values are missing.
@@ -48,7 +48,7 @@ mean_squared_error(y_test, preds) ** 0.5
 
 
 
-**For our final submission**:
+# ** For our final submission **:
 # Imports
 import pandas as pd
 from sklearn.linear_model import LinearRegression
